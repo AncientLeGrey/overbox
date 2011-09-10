@@ -7,6 +7,7 @@ Vagrant::Config.run do |config|
   conf = case true
     when File.exists?("#{config_name}.yaml") then YAML.load_file("#{config_name}.yaml")
     when File.exists?("#{config_name}.json") then JSON.parse(File.read("#{config_name}.json"))
+    when File.exists?("#{config_name}.example.yaml") then YAML.load_file("#{config_name}.example.yaml")
     else {}
   end
 
@@ -30,11 +31,10 @@ Vagrant::Config.run do |config|
   end
 
   conf['portforwarding'].each do |key,value|
-    name = key
     if value.is_a? Hash then
-      config.vm.forward_port name, value['lokal'], value['remote']
+      config.vm.forward_port key, value['lokal'], value['remote']
     else
-      config.vm.forward_port name, value, value
+      config.vm.forward_port key, value, value
     end
   end unless conf['portforwarding'].nil?
 
@@ -53,7 +53,7 @@ Vagrant::Config.run do |config|
       chef.add_recipe project.main_recipe
     end
 
-    chef.json=conf['chef']['config'] unless conf['chef'].nil?
+    chef.json = conf['chef']['config'] unless conf['chef'].nil?
 
   end
 
