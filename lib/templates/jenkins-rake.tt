@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description><![CDATA[
+Invoke rake tasks for project <%= '<'+'%= @project_name %'+'>' %>.<br/>
+Use the <a href="batchTasks/">batchtasks</a> to bundle und deploy.<br/>
+View in browser: 
+<ul>
+  <li><a target="_blank" href="/<%= '<'+'%= @project_name %'+'>' %>-ci"><%= '<'+'%= @project_name %'+'>' %> (ci)</a></li>
+  <li><a target="_blank" href="/<%= '<'+'%= @project_name %'+'>' %>-development"><%= '<'+'%= @project_name %'+'>' %> (development)</a></li>
+</ul>
+]]></description>
+  <logRotator>
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>5</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.batch__task.BatchTaskProperty>
+      <tasks>
+        <hudson.plugins.batch__task.BatchTask>
+          <name>bundle install</name>
+          <script>bundle --no-color install</script>
+        </hudson.plugins.batch__task.BatchTask>
+        <hudson.plugins.batch__task.BatchTask>
+          <name>bundle update</name>
+          <script>bundle --no-color update</script>
+        </hudson.plugins.batch__task.BatchTask>
+        <hudson.plugins.batch__task.BatchTask>
+          <name>ci deploy</name>
+          <script>rake torquebox:deploy[<%= '<'+'%= @project_name %'+'>' %>-ci]</script>
+        </hudson.plugins.batch__task.BatchTask>
+        <hudson.plugins.batch__task.BatchTask>
+          <name>ci undeploy</name>
+          <script>rake torquebox:undeploy</script>
+        </hudson.plugins.batch__task.BatchTask>
+        <hudson.plugins.batch__task.BatchTask>
+          <name>development deploy</name>
+          <script>cd <%= '<'+'%= @project_path %'+'>' %> ; rake torquebox:deploy[<%= '<'+'%= @project_name %'+'>' %>-development]</script>
+        </hudson.plugins.batch__task.BatchTask>
+        <hudson.plugins.batch__task.BatchTask>
+          <name>development undeploy</name>
+          <script>cd <%= '<'+'%= @project_path %'+'>' %> ; rake torquebox:undeploy</script>
+        </hudson.plugins.batch__task.BatchTask>
+      </tasks>
+    </hudson.plugins.batch__task.BatchTaskProperty>
+  </properties>
+  <scm class="hudson.plugins.filesystem_scm.FSSCM">
+    <path><%= '<'+'%= @project_path %'+'>' %></path>
+    <clearWorkspace>false</clearWorkspace>
+    <filterEnabled>false</filterEnabled>
+    <includeFilter>false</includeFilter>
+    <filters/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers class="vector"/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>( [ -f Gemfile.lock ] || bundle --no-color install )</command>
+    </hudson.tasks.Shell>
+    <hudson.plugins.rake.Rake>
+      <rakeInstallation>(Default)</rakeInstallation>
+      <rakeFile></rakeFile>
+      <rakeLibDir></rakeLibDir>
+      <rakeWorkingDir></rakeWorkingDir>
+      <tasks>spec</tasks>
+      <silent>false</silent>
+    </hudson.plugins.rake.Rake>
+  </builders>
+  <publishers>
+    <hudson.tasks.junit.JUnitResultArchiver>
+      <testResults>spec/reports/*.xml</testResults>
+      <keepLongStdio>false</keepLongStdio>
+      <testDataPublishers/>
+    </hudson.tasks.junit.JUnitResultArchiver>
+    <hudson.plugins.batch__task.BatchTaskInvoker>
+      <configs>
+        <hudson.plugins.batch__task.BatchTaskInvoker_-Config>
+          <project><%= '<'+'%= @job_name %'+'>' %></project>
+          <task>development deploy</task>
+        </hudson.plugins.batch__task.BatchTaskInvoker_-Config>
+      </configs>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+      </threshold>
+    </hudson.plugins.batch__task.BatchTaskInvoker>
+  </publishers>
+  <buildWrappers/>
+</project>

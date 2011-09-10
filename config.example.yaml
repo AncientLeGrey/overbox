@@ -1,0 +1,40 @@
+box:
+  name: CentOS-5.6-i386
+  url: http://dl.dropbox.com/u/153388/torquebox.rpm/CentOS-5.6.box
+  ram: 720
+
+shared_folders:
+
+portforwarding:
+  jboss.web: 8080
+  rundeck: 4440
+  clarity: 3000
+
+chef:
+  recipes:
+    - overbox
+    - clarity
+    - rundeck
+
+  config:
+    java6:
+      vendor: openjdk
+    torquebox:
+      version: 1.1.1-1
+      components:
+        - server
+        - docs
+        - backstage
+    rundeck:
+      port: 4440
+      deployment: rpm
+    jenkins:
+      context: jenkins
+      deployment: war
+    clarity:
+      port: 3000
+      log_dir: /var/log
+      log_files:
+        - /var/lib/torquebox/jboss/server/default/log/server.log
+        - /var/log/clarity.log
+        - /var/log/yum.log

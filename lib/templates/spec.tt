@@ -1,0 +1,7 @@
+describe 'example' do
+
+    it 'works' do
+        1.should eq(1)
+    end
+
+end

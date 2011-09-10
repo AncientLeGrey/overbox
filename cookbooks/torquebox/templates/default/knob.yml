@@ -1,0 +1,15 @@
+--- 
+application: 
+  root: <%= @root %>
+  env: <%= @env %>
+web: 
+  context: <%= @context %>
+<% if @static then %>
+  static: <%= @static %>
+<% end %>
+<% unless @environment.empty? then %>
+environment:
+<% @environment.each do |key, value| %>
+  <%= key %>: <%= value %>
+<% end %>
+<% end %>

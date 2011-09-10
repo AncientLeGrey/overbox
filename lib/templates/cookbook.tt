@@ -1,0 +1,12 @@
+require_recipe 'torquebox'
+require_recipe 'jenkins'
+
+torquebox_knob_deployment '<%= @name %>'
+
+jenkins_job 'rake' do
+  plugins [
+    'filesystem_scm',
+    'batch-task',
+    'rake'
+  ]
+end

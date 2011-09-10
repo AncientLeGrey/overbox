@@ -1,0 +1,10 @@
+source 'http://rubygems.org'
+
+gem 'torquebox'
+gem 'rack'
+gem 'rake'
+
+group :development do
+  gem 'ci_reporter'
+  gem 'rspec'
+end

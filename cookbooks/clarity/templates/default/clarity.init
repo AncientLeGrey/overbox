@@ -1,0 +1,36 @@
+#! /bin/bash
+#
+# clarity           Web interface for grep and tail -f
+#
+# chkconfig: 2345 25 10
+# description: clarity
+# processname: clarity
+# pidfile: /var/run/clarity.pid
+
+. /etc/init.d/functions
+
+case "$1" in
+  start)
+    [ -s /usr/lib/rvm/scripts/rvm ] && source /usr/lib/rvm/scripts/rvm
+    echo -n "Starting clarity: "
+    daemon 'nohup clarity --config=/etc/clarity.yaml <%= @log_dir %> >> /var/log/clarity.log &'
+    pidof -xs clarity > /var/run/clarity.pid
+  ;;
+  stop)
+    echo -n "Shutting down clarity: "
+    killproc clarity
+    rm /var/run/clarity.pid
+  ;;
+  status)
+    status clarity
+  ;;
+  restart)
+    $0 stop
+    $0 start
+  ;;
+  *)
+    echo "usage: $0 (start|stop|restart|status)"
+  ;;
+esac
+
+exit 0

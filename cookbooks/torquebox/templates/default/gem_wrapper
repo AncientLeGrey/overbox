@@ -1,0 +1,2 @@
+#!/bin/sh
+runuser - <%= @torquebox_user %> -l -c "gem $*"
