@@ -1,4 +1,4 @@
-yum_repo 'rundeck:' do
+yum_repo 'rundeck' do
   baseurl node[:rundeck][:yum_repo]
 end
 
@@ -16,14 +16,19 @@ group 'rvm' do
   action :modify
 end
 
-group 'torquebox' do
-  members ['rundeck']
-  append true
-  action :modify
-end
+rundeck_members = ['root', 'vagrant']
+
+if node[:torquebox][:components].include?(:server) then
+  group node[:torquebox][:group] do
+    members ['rundeck']
+    append true
+    action :modify
+  end
+  rundeck_members << node[:torquebox][:user]
+end if node[:torquebox]
 
 group 'rundeck' do
-  members ['root', 'vagrant', 'torquebox']
+  members rundeck_members
   append true
   action :modify
 end
