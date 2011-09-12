@@ -17,5 +17,6 @@ when 'war' then
   default[:jenkins][:port] = 8080
   default[:jenkins][:ajp_port] = 8009
   default[:jenkins][:service] = 'torquebox'
+  default[:jenkins][:context] = 'jenkins'
   default[:jenkins][:war] = "http://mirrors.jenkins-ci.org/war/#{node[:jenkins][:version]}/jenkins.war"
 end
