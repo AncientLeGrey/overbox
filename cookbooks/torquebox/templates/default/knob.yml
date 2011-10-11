@@ -7,6 +7,10 @@ web:
 <% if @static then %>
   static: <%= @static %>
 <% end %>
+<% unless @ruby_version.empty? then %>
+ruby:
+  version: <%= @ruby_version %>
+<% end %>
 <% unless @environment.empty? then %>
 environment:
 <% @environment.each do |key, value| %>

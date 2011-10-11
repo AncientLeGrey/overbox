@@ -14,11 +14,12 @@ action :add do
     owner node[:torquebox][:user]
     group node[:torquebox][:group]
     variables(
-      :root        => root,
-      :context     => (new_resource.context||name),
-      :env         => new_resource.env,
-      :static      => new_resource.static,
-      :environment => new_resource.environment
+      :root         => root,
+      :context      => (new_resource.context||name),
+      :env          => new_resource.env,
+      :static       => new_resource.static,
+      :ruby_version => new_resource.ruby_version,
+      :environment  => new_resource.environment
     )
   end
 
