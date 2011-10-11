@@ -1,0 +1,2 @@
+require '<%= @name %>.rb'
+run <%= @name.capitalize %>

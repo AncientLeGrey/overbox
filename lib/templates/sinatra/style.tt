@@ -1,0 +1,37 @@
+.torquebox-theme(@size: 1) {
+    background-color: #DDDDDF;
+    border-top: 1px solid #AAAAAC;
+    border-bottom: 1px solid #AAAAAC;
+    padding-top: 5px * @size;
+    padding-bottom: 10px * @size;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+body {
+    font-family: Interstate,Helvetica,Arial,sans-serif;
+    margin: 0px;
+    margin-top: 30px;
+}
+
+#header {
+    .torquebox-theme(3);
+    h1 {
+        margin: 0px;
+        font-weight: bold;
+        display: inline;
+        #name {
+            font-weight: normal;
+            display: inline;
+        }
+    }
+}
+
+#content {
+    padding: 10px;
+    min-height: 100px;
+}
+
+#footer {
+    .torquebox-theme;
+}

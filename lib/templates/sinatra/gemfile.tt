@@ -1,0 +1,16 @@
+source 'http://rubygems.org'
+
+gem 'torquebox', '1.1.1' # http://torquebox.org/
+gem 'rack'               # http://rack.rubyforge.org/
+gem 'sinatra'            # http://www.sinatrarb.com/
+gem 'sinatra-reloader'   # http://github.com/rkh/sinatra-reloader
+gem 'slim'               # http://slim-lang.com/
+gem 'less', '~> 1.2'     # http://lesscss.org/
+gem 'rake'               # http://rake.rubyforge.org/
+
+group :development do
+  gem 'ci_reporter'         # http://github.com/nicksieger/ci_reporter
+  gem 'torquespec', '0.3.5' # http://github.com/torquebox/torquespec
+  gem 'capybara'            # http://github.com/jnicklas/capybara
+  gem 'akephalos'           # http://github.com/bernerdschaefer/akephalos
+end

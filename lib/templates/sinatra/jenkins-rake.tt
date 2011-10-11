@@ -1,18 +1,18 @@
 <?xml version='1.0' encoding='UTF-8'?>
+<% if @ruby_versions.size > 1 then %>
+<matrix-project>
+<% else %>
 <project>
+<% end %>
   <actions/>
   <description><![CDATA[
 Invoke rake tasks for project <%= '<'+'%= @project_name %'+'>' %>.<br/>
 Use the <a href="batchTasks/">batchtasks</a> to bundle und deploy.<br/>
-View in browser: 
-<ul>
-  <li><a target="_blank" href="/<%= '<'+'%= @project_name %'+'>' %>-ci"><%= '<'+'%= @project_name %'+'>' %> (ci)</a></li>
-  <li><a target="_blank" href="/<%= '<'+'%= @project_name %'+'>' %>-development"><%= '<'+'%= @project_name %'+'>' %> (development)</a></li>
-</ul>
+View in browser: <a target="_blank" href="/<%= '<'+'%= @project_name %'+'>' %>"><%= '<'+'%= @project_name %'+'>' %></a>
 ]]></description>
   <logRotator>
     <daysToKeep>-1</daysToKeep>
-    <numToKeep>5</numToKeep>
+    <numToKeep>10</numToKeep>
     <artifactDaysToKeep>-1</artifactDaysToKeep>
     <artifactNumToKeep>-1</artifactNumToKeep>
   </logRotator>
@@ -29,23 +29,24 @@ View in browser:
           <script>bundle --no-color update</script>
         </hudson.plugins.batch__task.BatchTask>
         <hudson.plugins.batch__task.BatchTask>
-          <name>ci deploy</name>
-          <script>rake torquebox:deploy[<%= '<'+'%= @project_name %'+'>' %>-ci]</script>
+          <name>deploy</name>
+          <script>cd <%= '<'+'%= @project_path %'+'>' %> ; rake torquebox:deploy[<%= '<'+'%= @project_name %'+'>' %>]</script>
         </hudson.plugins.batch__task.BatchTask>
         <hudson.plugins.batch__task.BatchTask>
-          <name>ci undeploy</name>
-          <script>rake torquebox:undeploy</script>
-        </hudson.plugins.batch__task.BatchTask>
-        <hudson.plugins.batch__task.BatchTask>
-          <name>development deploy</name>
-          <script>cd <%= '<'+'%= @project_path %'+'>' %> ; rake torquebox:deploy[<%= '<'+'%= @project_name %'+'>' %>-development]</script>
-        </hudson.plugins.batch__task.BatchTask>
-        <hudson.plugins.batch__task.BatchTask>
-          <name>development undeploy</name>
+          <name>undeploy</name>
           <script>cd <%= '<'+'%= @project_path %'+'>' %> ; rake torquebox:undeploy</script>
         </hudson.plugins.batch__task.BatchTask>
       </tasks>
     </hudson.plugins.batch__task.BatchTaskProperty>
+    <org.jenkinsci.plugins.envinject.EnvInjectJobProperty>
+      <info>
+        <propertiesContent>java_opts=</propertiesContent>
+        <populateTriggerCause>false</populateTriggerCause>
+      </info>
+      <on>true</on>
+      <keepJenkinsSystemVariables>true</keepJenkinsSystemVariables>
+      <keepBuildVariables>true</keepBuildVariables>
+    </org.jenkinsci.plugins.envinject.EnvInjectJobProperty>
   </properties>
   <scm class="hudson.plugins.filesystem_scm.FSSCM">
     <path><%= '<'+'%= @project_path %'+'>' %></path>
@@ -60,6 +61,18 @@ View in browser:
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <triggers class="vector"/>
   <concurrentBuild>false</concurrentBuild>
+<% if @ruby_versions.size > 1 then %>
+  <axes>
+    <hudson.matrix.TextAxis>
+      <name>ruby_version</name>
+      <values>
+<% @ruby_versions.each do |ruby| %>
+        <string><%= ruby %></string>
+<% end %>
+      </values>
+    </hudson.matrix.TextAxis>
+  </axes>
+<% end %>
   <builders>
     <hudson.tasks.Shell>
       <command>( [ -f Gemfile.lock ] || bundle --no-color install )</command>
@@ -69,7 +82,7 @@ View in browser:
       <rakeFile></rakeFile>
       <rakeLibDir></rakeLibDir>
       <rakeWorkingDir></rakeWorkingDir>
-      <tasks>spec</tasks>
+      <tasks>spec<% if @ruby_versions.size > 1 then %> ruby_version=${ruby_version}<% end %></tasks>
       <silent>false</silent>
     </hudson.plugins.rake.Rake>
   </builders>
@@ -79,19 +92,19 @@ View in browser:
       <keepLongStdio>false</keepLongStdio>
       <testDataPublishers/>
     </hudson.tasks.junit.JUnitResultArchiver>
-    <hudson.plugins.batch__task.BatchTaskInvoker>
-      <configs>
-        <hudson.plugins.batch__task.BatchTaskInvoker_-Config>
-          <project><%= '<'+'%= @job_name %'+'>' %></project>
-          <task>development deploy</task>
-        </hudson.plugins.batch__task.BatchTaskInvoker_-Config>
-      </configs>
-      <threshold>
-        <name>SUCCESS</name>
-        <ordinal>0</ordinal>
-        <color>BLUE</color>
-      </threshold>
-    </hudson.plugins.batch__task.BatchTaskInvoker>
   </publishers>
-  <buildWrappers/>
+  <buildWrappers>
+<% if @ruby_versions.size > 1 then %>
+    <org.jenkinsci.plugins.envinject.EnvInjectBuildWrapper>
+      <info>
+        <propertiesContent>ruby_version=${ruby_version}</propertiesContent>
+        <populateTriggerCause>false</populateTriggerCause>
+      </info>
+    </org.jenkinsci.plugins.envinject.EnvInjectBuildWrapper>
+<% end -%>
+  </buildWrappers>
+<% if @ruby_versions.size > 1 then %>
+</matrix-project>
+<% else %>
 </project>
+<% end %>

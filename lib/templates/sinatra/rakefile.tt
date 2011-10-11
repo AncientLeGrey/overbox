@@ -2,7 +2,9 @@ require 'torquebox-rake-support'
 require 'rspec/core/rake_task'
 require 'ci/reporter/rake/rspec'
 
-RSpec::Core::RakeTask.new(:spec => 'ci:setup:rspec')
+RSpec::Core::RakeTask.new(:spec => 'ci:setup:rspec') do |t|
+  t.ruby_opts = "--#{ENV['ruby_version']||'<%= @ruby_versions.max %>'}"
+end
 
 desc 'run specs'
 task :default => :spec

@@ -1,12 +1,15 @@
 require_recipe 'torquebox'
 require_recipe 'jenkins'
 
-torquebox_knob_deployment '<%= @name %>'
+torquebox_knob_deployment '<%= @name %>' do
+  ruby_version '<%= @ruby_versions.max %>'
+end
 
 jenkins_job 'rake' do
   plugins [
     'filesystem_scm',
     'batch-task',
+    'envinject',
     'rake'
   ]
 end

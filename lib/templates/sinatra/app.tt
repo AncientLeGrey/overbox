@@ -1,0 +1,38 @@
+require 'rubygems'
+require 'sinatra/base'
+require 'sinatra/reloader'
+require 'slim'
+require 'less'
+require 'lib/torquebox_logger'
+
+class <%= @name.capitalize %> < Sinatra::Base
+
+  configure do
+    set :root, File.dirname(__FILE__)
+    register Sinatra::TorqueBox::Logging
+    Slim::Engine.set_default_options :pretty => true
+  end
+
+  configure(:development) do
+    register Sinatra::Reloader
+    also_reload ['*.rb', '*.yml']
+  end
+
+  helpers do
+    def normalize
+      def (str = 'https://raw.github.com/necolas/normalize.css/master/normalize.css').css
+        self
+      end
+      str
+    end
+  end
+
+  get '/' do
+    slim :index
+  end
+
+  get '/style.css' do
+    less :style
+  end
+
+end

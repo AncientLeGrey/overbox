@@ -1,0 +1,3 @@
+p
+  | Hello from project <%= @name %> at
+  code = Time.now.strftime('%Y-%m-%d %H:%M:%S')

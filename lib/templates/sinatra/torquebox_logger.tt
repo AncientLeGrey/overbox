@@ -1,0 +1,48 @@
+module TorqueBox
+
+  class CommonLogger < Logger
+    def write(msg)
+      info msg.chop
+    end
+  end
+
+  module Rack
+    class Logger
+      def initialize(app, level = :info)
+        @app, @level = app, level
+      end
+
+      def call(env)
+        logger = TorqueBox::Logger.new
+        logger.level = @level
+
+        env['rack.logger'] = logger
+        @app.call(env)
+      end
+    end
+  end
+
+end
+
+module Sinatra
+  module TorqueBox
+    module Logging
+      def setup_logging(builder)
+        if logging? then
+          common_logger = ::TorqueBox::CommonLogger.new
+          builder.use Rack::CommonLogger, common_logger
+          builder.use ::TorqueBox::Rack::Logger
+          common_logger.info "Sinatra::TorqueBox::Logging initialized"
+        else
+          builder.use Rack::NullLogger
+        end
+      end
+
+      def self.registered(app)
+        app.enable :logging
+      end
+    end
+  end
+
+  register TorqueBox::Logging
+end
