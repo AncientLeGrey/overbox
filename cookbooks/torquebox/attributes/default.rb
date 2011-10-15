@@ -9,6 +9,8 @@ default[:torquebox][:deploy_dir] = "#{node[:torquebox][:home]}/apps"
 default[:torquebox][:jruby_home] = "#{node[:torquebox][:home]}/jruby"
 default[:torquebox][:app_repo]   = "#{node[:torquebox][:home]}-apprepo"
 default[:torquebox][:gem_wrapper]= "#{node[:torquebox][:jruby_home]}/bin/gem_warpper"
+default[:torquebox][:jvm_args]   = '-Xms128m -Xmx512m -XX:PermSize=256m -Dorg.jboss.resolver.warning=true -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000'
+default[:torquebox][:ip]         = '0.0.0.0'
 
 default[:torquebox][:components] = ['server']
 

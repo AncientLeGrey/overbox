@@ -2,6 +2,15 @@ package 'torquebox' do
   version node[:torquebox][:version] if node[:torquebox][:version]
 end
 
+template '/etc/sysconfig/torquebox' do
+  mode 0644
+  source 'sysconfig'
+  variables(
+    :jvm_args => node[:torquebox][:jvm_args],
+    :ip => node[:torquebox][:ip]
+  )
+end
+
 template node[:torquebox][:gem_wrapper] do
   mode 0755
   source 'gem_wrapper'
