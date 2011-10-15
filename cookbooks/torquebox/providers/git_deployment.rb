@@ -24,7 +24,7 @@ end
 action :remove do
 
   name = ::File.basename(new_resource.name)
-  project_path = "/home/#{node[:torquebox][:user]}/#{name}"
+  project_path = "#{node[:torquebox][:app_repo]}/#{name}"
 
   torquebox_deploy_knob name do
     action :remove

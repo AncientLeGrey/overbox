@@ -7,7 +7,7 @@ default[:torquebox][:service]    = 'torquebox'
 default[:torquebox][:conf_dir]   = '/etc/torquebox.d'
 default[:torquebox][:deploy_dir] = "#{node[:torquebox][:home]}/apps"
 default[:torquebox][:jruby_home] = "#{node[:torquebox][:home]}/jruby"
-default[:torquebox][:app_repo]   = "/home/#{node[:torquebox][:user]}/apps"
+default[:torquebox][:app_repo]   = "#{node[:torquebox][:home]}-apprepo"
 default[:torquebox][:gem_wrapper]= "#{node[:torquebox][:jruby_home]}/bin/gem_warpper"
 
 default[:torquebox][:components] = ['server']
